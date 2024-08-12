@@ -1,16 +1,147 @@
 ---
-
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import BotIcon from "@/icons/BotIcon.astro"
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout>
+	<li class="loading">
+		<i></i>
+		<h4>Cargando...</h4>
+		<h4 id="progress"></h4>
+		<h5>Esto puede tardar un poco. Paciencia.</h5>
+	</li>
+	<main>
+		<div class="messages-container">
+			<ul>
+
+			</ul>
+			  <template id="message-template">
+				<li class="message">
+				  <span><BotIcon /></span>
+				  <p></p>
+				</li>
+			  </template>
+		</div>
+
+		<form>
+			<input placeholder="Escribe tu mensaje aquí...">
+			<button disabled>Enviar</button>
+		</form>
+
+	  	<small>&nbsp;</small>
+
+
+	</main>
+
+	<script type="module">
+		import { CreateWebWorkerMLCEngine } from "https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.46/+esm"
+
+		const $ = el => document.querySelector(el)
+
+		const $form = $('form')
+		const $input = $('input')
+		const $template = $('#message-template')
+		const $messages = $('ul')
+		const $container = $('main')
+		const $chatContainer = $('.messages-container')
+		const $button = $('button')
+		const $info = $('small')
+		const $progress = $('#progress')
+		const $loading = $('.loading')
+
+		let messages = []
+		let end = false
+
+		const SELECTED_MODEL = 'Llama-3-8B-Instruct-q4f32_1-MLC-1k'
+
+		const engine = await CreateWebWorkerMLCEngine(
+			new Worker('/workers/worker.js', { type: 'module' }),
+			SELECTED_MODEL,
+			{
+				initProgressCallback: (info) => {
+			  		$info.textContent = info.text;
+			  		const match = info.text.match(/\[(\d+)\/(\d+)\]/);
+					
+					if (match) {
+						const num1 = parseInt(match[1], 10);
+					  	const num2 = parseInt(match[2], 10);
+
+					  	const percentage = Math.floor((num1 / num2) * 100);
+
+					  	$progress.textContent = percentage + "%";
+					}
+				
+			  		if (info.progress === 1 && !end) {
+						end = true
+						$loading?.parentNode?.removeChild($loading)
+						$button.removeAttribute('disabled')
+						addMessage("¡Hola! Soy un ChatGPT que se ejecuta completamente en tu navegador. ¿En qué puedo ayudarte hoy?", 'bot')
+						$input.focus()
+			  		}
+				}
+		  	}
+		)
+
+		$form.addEventListener('submit', async (event) => {
+		  	event.preventDefault()
+		  	const messageText = $input.value.trim()
+
+		  	if (messageText !== '') {
+				// añadimos el mensaje en el DOM
+				$input.value = ''
+		  	}
+
+		  	addMessage(messageText, 'user')
+		  	$button.setAttribute('disabled', '')
+
+		  	const userMessage = {
+				role: 'user',
+				content: messageText
+		  	}
+
+		  	messages.push(userMessage)
+
+		  	const chunks = await engine.chat.completions.create({
+				messages,
+				stream: true
+		 	})
+
+		  	let reply = ""
+
+		  	const $botMessage = addMessage("", 'bot')
+
+		  	for await (const chunk of chunks) {
+				const choice = chunk.choices[0]
+				const content = choice?.delta?.content ?? ""
+				reply += content
+				$botMessage.textContent = reply
+				$chatContainer.scrollTop = $chatContainer.scrollHeight
+		  	}
+
+		  	$button.removeAttribute('disabled')
+		  	messages.push({
+				role: 'assistant',
+				content: reply
+		  	})
+		  	$chatContainer.scrollTop = $chatContainer.scrollHeight
+		})
+
+		function addMessage(text, sender) {
+			// clonar el template
+		  	const clonedTemplate = $template.content.cloneNode(true)
+		  	const $newMessage = clonedTemplate.querySelector('.message')
+
+		  	const $text = $newMessage.querySelector('p')
+
+		  	$text.textContent = text
+		  	$newMessage.classList.add(sender)
+
+		  	$messages.appendChild($newMessage)
+
+		  	$chatContainer.scrollTop = $chatContainer.scrollHeight
+
+		  	return $text
+		}
+	</script>
+</BaseLayout>
+

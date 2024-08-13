@@ -16,7 +16,6 @@ body {
     background: var(--white);
     display: grid;
     place-content: center;
-    height: 100dvh;
 }
 
 main {
@@ -83,9 +82,9 @@ ul {
         align-self: flex-start;
         padding: 4px 8px 4px 0;
 
-            p {
-                padding: 8px 16px 8px 5px;
-            }
+        p {
+            padding: 8px 16px 8px 5px;
+        }
 
     }
 }
@@ -133,7 +132,7 @@ small {
     left: 0;
     right: 0;
     margin: auto;
-    width: 400px;
+    width: 90%;
 }
 
 .loading {

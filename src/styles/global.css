@@ -34,13 +34,13 @@ body {
 
 main {
     display: grid;
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: auto 1fr auto auto;
     height: 100vh;
     height: 100dvh;
     width: 100vw;
     max-width: 1080px;
     border-radius: 4px;
-    padding: 18px 20px;
+    padding: 15px 20px 10px 20px;
 }
 
 .messages-container {
@@ -106,7 +106,7 @@ ul {
 
 form {
     display: flex;
-    margin-bottom: 25px;
+    margin-bottom: 12px;
 
     input {
         border-radius: 999999px;
@@ -142,20 +142,14 @@ form {
     }
 }
 
+footer {
+    display: flex;
+    justify-content: space-between;
+}
+
 small {
     font-size: 10px;
     color: var(--gray-700);
-    -webkit-backdrop-filter: blur(35px);
-    backdrop-filter: blur(35px);
-    padding: 4px;
-    border-radius: 10px;
-    position: fixed;
-    bottom: 10px;
-    left: 0;
-    right: 0;
-    margin: auto;
-    width: 90%;
-    max-width: 1080px;
 }
 
 .loading {
@@ -200,12 +194,11 @@ small {
 }
 
 .copyright {
-    position: fixed;
-    bottom: 14px;
-    right: 20px;
     color: var(--black);
     font-size: .65rem;
+    min-width: 100px;
     color: var(--gray-700);
+    margin-top: auto;
 }
 
 /* CSS Reset */

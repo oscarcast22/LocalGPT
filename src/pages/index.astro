@@ -34,7 +34,7 @@ import BotIcon from "@/icons/BotIcon.astro"
 	</main>
 
 	<script type="module">
-		import { CreateWebWorkerMLCEngine } from "https://esm.run/@mlc-ai/web-llm"
+		import { CreateWebWorkerMLCEngine } from "https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.59/lib/index.min.js"
 
 		const $ = el => document.querySelector(el)
 
@@ -142,13 +142,6 @@ import BotIcon from "@/icons/BotIcon.astro"
 
 		  	return $text
 		}
-
-		if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', () => {
-        const mainElement = document.querySelector('main');
-        mainElement.style.height = `${window.visualViewport.height}px`;
-    });
-}
 
 	</script>
 </BaseLayout>

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro"
 import BotIcon from "@/icons/BotIcon.astro"
+import Header from "@/components/Header.astro"
 ---
 
 <BaseLayout>
@@ -11,6 +12,7 @@ import BotIcon from "@/icons/BotIcon.astro"
 		<h5>Esto puede tardar un poco. Paciencia.</h5>
 	</li>
 	<main>
+		<Header />
 		<div class="messages-container">
 			<ul>
 
@@ -25,7 +27,7 @@ import BotIcon from "@/icons/BotIcon.astro"
 
 		<form>
 			<input placeholder="Escribe tu mensaje aquí...">
-			<button disabled>Enviar</button>
+			<button disabled id="sent">Enviar</button>
 		</form>
 
 	  	<small>&nbsp;</small>
@@ -33,7 +35,7 @@ import BotIcon from "@/icons/BotIcon.astro"
 
 	</main>
 
-	<script type="module">
+	<script type="module" is:inline>
 		import { CreateWebWorkerMLCEngine } from "https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.59/lib/index.min.js"
 
 		const $ = el => document.querySelector(el)
@@ -44,7 +46,7 @@ import BotIcon from "@/icons/BotIcon.astro"
 		const $messages = $('ul')
 		const $container = $('main')
 		const $chatContainer = $('.messages-container')
-		const $button = $('button')
+		const $button = $('#sent')
 		const $info = $('small')
 		const $progress = $('#progress')
 		const $loading = $('.loading')
@@ -117,7 +119,6 @@ import BotIcon from "@/icons/BotIcon.astro"
 				$botMessage.textContent = reply
 				$chatContainer.scrollTop = $chatContainer.scrollHeight
 		  	}
-
 		  	$button.removeAttribute('disabled')
 		  	messages.push({
 				role: 'assistant',

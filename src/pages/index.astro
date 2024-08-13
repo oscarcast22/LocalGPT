@@ -59,7 +59,7 @@ import Header from "@/components/Header.astro"
 		let messages = []
 		let end = false
 
-		const SELECTED_MODEL = 'gemma-2-2b-it-q4f16_1-MLC'
+		const SELECTED_MODEL = 'gemma-2-2b-it-q4f16_1-MLC-1k'
 
 		const engine = await CreateWebWorkerMLCEngine(
 			new Worker('/workers/worker.js', { type: 'module' }),

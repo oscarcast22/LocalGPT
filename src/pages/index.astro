@@ -143,16 +143,13 @@ import BotIcon from "@/icons/BotIcon.astro"
 		  	return $text
 		}
 
-		function adjustMainHeight() {
-    const mainElement = document.querySelector('main');
-    mainElement.style.height = `${window.innerHeight}px`;
+		if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+        const mainElement = document.querySelector('main');
+        mainElement.style.height = `${window.visualViewport.height}px`;
+    });
 }
 
-// Listen for resize events
-window.addEventListener('resize', adjustMainHeight);
-
-// Initial adjustment
-adjustMainHeight();
 	</script>
 </BaseLayout>
 
